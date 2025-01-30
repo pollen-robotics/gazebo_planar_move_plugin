@@ -50,7 +50,7 @@ PlanarMove::~PlanarMove()
 void PlanarMove::Load(physics::ModelPtr parent, sdf::ElementPtr sdf)
 {
     model_ = parent;
-
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Loading Gazebo planar move plugin");
     loadParam(sdf, robot_namespace_, std::string("/"), std::string("robot_namespace"), robot_namespace_);
     loadParam(sdf, command_topic_, std::string("cmd_vel"), std::string("command_topic"), robot_namespace_);
     loadParam(sdf, odometry_topic_, std::string("odom"), std::string("odometry_topic"), robot_namespace_);
@@ -67,6 +67,33 @@ void PlanarMove::Load(physics::ModelPtr parent, sdf::ElementPtr sdf)
     publish_period_ = 1.0 / publish_rate_;
     cmd_ = {0, 0, 0};
     tracked_state_ = {0, 0, 0};
+
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "robot_namespace: %s", robot_namespace_.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "command_topic: %s", command_topic_.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "odometry_topic: %s", odometry_topic_.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "odometry_frame: %s", odometry_frame_.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "robot_base_frame: %s", robot_base_frame_.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "publish_odometry: %s", publish_odometry_ ? "true" :"false");
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "publish_tf: %s", publish_tf_ ? "true": "false");
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "ground_truth: %s", ground_truth_ ? "true": "false");
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "publish_imu: %s", publish_imu_ ? "true" : "false");
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "control_mode: %s", control_mode_.c_str());
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "update_rate: %f", update_rate_);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"),
+                "publish_rate: %f", publish_rate_);
+
+
 
     // Get the noise params from the urdf
     if (sdf->HasElement("noise"))
@@ -108,7 +135,7 @@ void PlanarMove::Load(physics::ModelPtr parent, sdf::ElementPtr sdf)
             }
             else
                 RCLCPP_WARN_STREAM(rclcpp::get_logger("rclcpp"), "No type found in noise model. Ignoring noise model!");
-        }
+       }
     }
 
     // ros_node_ = gazebo_ros::Node::Get(sdf, parent);
