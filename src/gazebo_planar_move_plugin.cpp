@@ -49,6 +49,7 @@ PlanarMove::~PlanarMove()
 // cppcheck-suppress unusedFunction
 void PlanarMove::Load(physics::ModelPtr parent, sdf::ElementPtr sdf)
 {
+    // std::this_thread::sleep_for(std::chrono::milliseconds(1500));
     model_ = parent;
 
     loadParam(sdf, robot_namespace_, std::string("/"), std::string("robot_namespace"), robot_namespace_);
@@ -129,6 +130,11 @@ void PlanarMove::Load(physics::ModelPtr parent, sdf::ElementPtr sdf)
     update_connection_ = event::Events::ConnectBeforePhysicsUpdate(std::bind(&PlanarMove::UpdateChild, this));
 
     links_list_ = model_->GetLinks();
+    // print all links
+    // for (auto link : links_list_)
+    // {
+    //     RCLCPP_INFO_STREAM(rclcpp::get_logger("rclcpp"), "$$$$$$$ Link name: " << link->GetName());
+    // }
     base_link_ = model_->GetLink(robot_base_frame_);
 }
 
@@ -318,7 +324,8 @@ void PlanarMove::UpdateChild()
 
             if (base_link_ == nullptr)
             {
-                RCLCPP_FATAL_STREAM(rclcpp::get_logger("rclcpp"), "Model has no link named 'base link'");
+                RCLCPP_FATAL_STREAM(rclcpp::get_logger("rclcpp"), "gazebo_planar_move_plugin could not find the link '" << robot_base_frame_ << "'");
+
             }
             else
             {
